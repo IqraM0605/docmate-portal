@@ -15,7 +15,6 @@ const main = [
   { title: "Dashboard", to: "/dashboard", icon: LayoutDashboard },
   { title: "Patients", to: "/patients", icon: Users },
   { title: "Prescriptions", to: "/prescriptions", icon: Pill },
-  { title: "Medical History", to: "/medical-history", icon: FileClock },
   { title: "Notifications", to: "/notifications", icon: Bell, badge: 3 },
 ] as const;
 

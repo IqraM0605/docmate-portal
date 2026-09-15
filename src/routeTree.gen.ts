@@ -11,9 +11,12 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as MedicalHistoryRouteImport } from './routes/medical-history'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as PatientsRouteImport } from './routes/patients'
+import { Route as PrescriptionsRouteImport } from './routes/prescriptions'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as CaseCaseIdRouteImport } from './routes/case.$caseId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -23,6 +26,11 @@ const IndexRoute = IndexRouteImport.update({
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MedicalHistoryRoute = MedicalHistoryRouteImport.update({
+  id: '/medical-history',
+  path: '/medical-history',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NotificationsRoute = NotificationsRouteImport.update({
@@ -35,54 +43,95 @@ const PatientsRoute = PatientsRouteImport.update({
   path: '/patients',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrescriptionsRoute = PrescriptionsRouteImport.update({
+  id: '/prescriptions',
+  path: '/prescriptions',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CaseCaseIdRoute = CaseCaseIdRouteImport.update({
+  id: '/case/$caseId',
+  path: '/case/$caseId',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/medical-history': typeof MedicalHistoryRoute
   '/notifications': typeof NotificationsRoute
   '/patients': typeof PatientsRoute
+  '/prescriptions': typeof PrescriptionsRoute
   '/settings': typeof SettingsRoute
+  '/case/$caseId': typeof CaseCaseIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/medical-history': typeof MedicalHistoryRoute
   '/notifications': typeof NotificationsRoute
   '/patients': typeof PatientsRoute
+  '/prescriptions': typeof PrescriptionsRoute
   '/settings': typeof SettingsRoute
+  '/case/$caseId': typeof CaseCaseIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/medical-history': typeof MedicalHistoryRoute
   '/notifications': typeof NotificationsRoute
   '/patients': typeof PatientsRoute
+  '/prescriptions': typeof PrescriptionsRoute
   '/settings': typeof SettingsRoute
+  '/case/$caseId': typeof CaseCaseIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/notifications' | '/patients' | '/settings'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/medical-history'
+    | '/notifications'
+    | '/patients'
+    | '/prescriptions'
+    | '/settings'
+    | '/case/$caseId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/notifications' | '/patients' | '/settings'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/medical-history'
+    | '/notifications'
+    | '/patients'
+    | '/prescriptions'
+    | '/settings'
+    | '/case/$caseId'
   id:
     | '__root__'
     | '/'
     | '/dashboard'
+    | '/medical-history'
     | '/notifications'
     | '/patients'
+    | '/prescriptions'
     | '/settings'
+    | '/case/$caseId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
+  MedicalHistoryRoute: typeof MedicalHistoryRoute
   NotificationsRoute: typeof NotificationsRoute
   PatientsRoute: typeof PatientsRoute
+  PrescriptionsRoute: typeof PrescriptionsRoute
   SettingsRoute: typeof SettingsRoute
+  CaseCaseIdRoute: typeof CaseCaseIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -101,6 +150,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/medical-history': {
+      id: '/medical-history'
+      path: '/medical-history'
+      fullPath: '/medical-history'
+      preLoaderRoute: typeof MedicalHistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/notifications': {
       id: '/notifications'
       path: '/notifications'
@@ -115,11 +171,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PatientsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/prescriptions': {
+      id: '/prescriptions'
+      path: '/prescriptions'
+      fullPath: '/prescriptions'
+      preLoaderRoute: typeof PrescriptionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings': {
       id: '/settings'
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/case/$caseId': {
+      id: '/case/$caseId'
+      path: '/case/$caseId'
+      fullPath: '/case/$caseId'
+      preLoaderRoute: typeof CaseCaseIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -128,9 +198,12 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
+  MedicalHistoryRoute: MedicalHistoryRoute,
   NotificationsRoute: NotificationsRoute,
   PatientsRoute: PatientsRoute,
+  PrescriptionsRoute: PrescriptionsRoute,
   SettingsRoute: SettingsRoute,
+  CaseCaseIdRoute: CaseCaseIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

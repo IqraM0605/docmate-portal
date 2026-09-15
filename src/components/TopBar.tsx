@@ -1,4 +1,4 @@
-import { Bell, Settings, ChevronDown, Search } from "lucide-react";
+import { Bell, Settings, ChevronDown } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { doctor } from "@/data/mock";
 
@@ -21,16 +21,6 @@ export function TopBar({
       </div>
 
       <div className="flex items-center gap-2.5">
-        {showSearch && (
-          <div className="relative hidden lg:block">
-            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-            <input
-              readOnly
-              placeholder="Search patients, IDs…"
-              className="h-10 w-64 rounded-full border border-border bg-muted pr-4 pl-9 text-sm outline-none placeholder:text-muted-foreground focus:border-primary"
-            />
-          </div>
-        )}
         <Link
           to="/settings"
           className="grid size-10 place-items-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"

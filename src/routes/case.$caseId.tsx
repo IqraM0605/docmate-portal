@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { ArrowLeft, CheckCircle2, Download, Save } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { Panel } from "@/components/Card";
@@ -40,6 +41,7 @@ export const Route = createFileRoute("/case/$caseId")({
 function CaseReviewPage() {
   const { caseId } = Route.useParams();
   const patientId = caseId || activeCase.id;
+  const [isSaved, setIsSaved] = useState(false);
 
   return (
     <AppLayout
@@ -99,16 +101,20 @@ function CaseReviewPage() {
         <div className="mx-auto flex max-w-6xl items-center justify-end gap-3 px-6 py-4">
           <button
             type="button"
+            onClick={() => {
+              window.localStorage.setItem("medikiosk-prescription-saved-at", new Date().toISOString());
+              setIsSaved(true);
+            }}
             className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-card px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-muted"
           >
-            <Save className="size-4" /> Save
+            <Save className="size-4" /> {isSaved ? "Saved" : "Save"}
           </button>
-          <button
-            type="button"
+          <Link
+            to="/prescriptions"
             className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
           >
             <Download className="size-4" /> Complete Consultation
-          </button>
+          </Link>
         </div>
       </div>
     </AppLayout>

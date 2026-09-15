@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Plus, Trash2, CalendarDays, ChevronDown } from "lucide-react";
 import { Panel } from "@/components/Card";
 import { prescription } from "@/data/mock";
@@ -157,6 +157,13 @@ export function PrescriptionBuilder() {
   );
   const [advice, setAdvice] = useState(() => prescription.advice);
   const [followUp, setFollowUp] = useState(() => prescription.followUp);
+
+  useEffect(() => {
+    window.localStorage.setItem(
+      "medikiosk-prescription-draft",
+      JSON.stringify({ medicines, investigations: selectedInvestigations, advice, followUp }),
+    );
+  }, [advice, followUp, medicines, selectedInvestigations]);
 
   const addMedicine = () => {
     setMedicines((current) => [

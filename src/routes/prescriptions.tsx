@@ -27,6 +27,22 @@ export const Route = createFileRoute("/prescriptions")({
 
 function PrescriptionsPage() {
   const [isConfirmOpen, setConfirmOpen] = useState(false);
+  const [isIssued, setIssued] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.localStorage.getItem("medikiosk-prescription-issued") === "true";
+  });
+  const [draft] = useState(() => {
+    if (typeof window === "undefined") return prescription;
+
+    const savedDraft = window.localStorage.getItem("medikiosk-prescription-draft");
+    if (!savedDraft) return prescription;
+
+    try {
+      return { ...prescription, ...JSON.parse(savedDraft) };
+    } catch {
+      return prescription;
+    }
+  });
 
   return (
     <AppLayout title="Prescriptions" subtitle="Preview and issue medication orders for the active case">
@@ -72,7 +88,7 @@ function PrescriptionsPage() {
                 </tr>
               </thead>
               <tbody>
-                {prescription.medicines.map((m) => (
+                {draft.medicines.map((m) => (
                   <tr key={m.name} className="border-t border-border">
                     <td className="px-4 py-3 font-semibold text-foreground">{m.name}</td>
                     <td className="px-4 py-3 text-muted-foreground">{m.dosage}</td>
@@ -88,7 +104,7 @@ function PrescriptionsPage() {
             <div>
               <p className="text-xs font-semibold text-muted-foreground">Investigations</p>
               <ul className="mt-2 space-y-2 text-sm text-foreground/80">
-                {prescription.investigations.map((item) => (
+                {draft.investigations.map((item) => (
                   <li key={item} className="flex items-center gap-2">
                     <span className="size-1.5 rounded-full bg-primary" />
                     {item}
@@ -98,21 +114,21 @@ function PrescriptionsPage() {
             </div>
             <div>
               <p className="text-xs font-semibold text-muted-foreground">Follow-up</p>
-              <p className="mt-2 text-sm font-semibold text-foreground">{prescription.followUp}</p>
+              <p className="mt-2 text-sm font-semibold text-foreground">{draft.followUp}</p>
             </div>
           </div>
 
           <div className="mt-6 rounded-2xl border border-border bg-muted p-4">
             <p className="text-xs font-semibold text-muted-foreground">Advice</p>
-            <p className="mt-2 text-sm leading-relaxed text-foreground/80">{prescription.advice}</p>
+            <p className="mt-2 text-sm leading-relaxed text-foreground/80">{draft.advice}</p>
           </div>
         </section>
 
         <div className="space-y-6">
           <Panel title="Status" description="Current prescription stage">
             <div className="space-y-3">
-              <StatusPill tone="warning" dot>
-                Draft in review
+              <StatusPill tone={isIssued ? "success" : "warning"} dot>
+                {isIssued ? "Sent to patient" : "Draft in review"}
               </StatusPill>
               <p className="text-sm text-muted-foreground">
                 Prepared for {activeCase.name} with flags reviewed and confirmed by the intake workflow.
@@ -130,10 +146,11 @@ function PrescriptionsPage() {
               </button>
               <button
                 type="button"
+                disabled={isIssued}
                 onClick={() => setConfirmOpen(true)}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                <ShieldCheck className="size-4" /> Confirm & Issue
+                <ShieldCheck className="size-4" /> {isIssued ? "Prescription Sent" : "Send to Patient"}
               </button>
             </div>
           </Panel>
@@ -161,7 +178,7 @@ function PrescriptionsPage() {
             </div>
 
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-              This will finalise the medication order for {activeCase.name} and send the prescription to the hospital dispensing queue. Review the instructions and follow-up plan before continuing.
+              This will finalise the medication order for {activeCase.name} and mark the prescription as sent to the patient. This is a frontend-only static action.
             </p>
 
             <div className="mt-6 flex flex-wrap justify-end gap-3">
@@ -174,10 +191,15 @@ function PrescriptionsPage() {
               </button>
               <button
                 type="button"
-                onClick={() => setConfirmOpen(false)}
+                onClick={() => {
+                  window.localStorage.setItem("medikiosk-prescription-issued", "true");
+                  window.localStorage.setItem("medikiosk-prescription-issued-at", new Date().toISOString());
+                  setIssued(true);
+                  setConfirmOpen(false);
+                }}
                 className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
               >
-                <Check className="size-4" /> Confirm & Issue
+                <Check className="size-4" /> Send to Patient
               </button>
             </div>
           </div>
